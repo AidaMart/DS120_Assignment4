@@ -1,0 +1,341 @@
+---
+title: "Homework_4_Part_1"
+author: "Aida Martirosyan" # Please write your name and surname in the quotes
+date: "April 26, 2021"
+output: html_document
+---
+For this part of the homework assignment, you are required to submit both R Markdown and HTML files with your answer codes in it. When submitting, be sure that the .Rmd file works, so when we run it, there are no errors, and it will contain the same information as the HTML one. If you do not follow the above instructions, your mark will be lowered by 10%. 
+
+Problem 1.
+Load the built-in dataset "mtcars" by command data(mtcars). 
+Check the class of the dataset, and if it is not a dataframe, make it a dataframe. 
+Add to the dataframe a new factor type column "mpgfactor" to convert the values of column "mpg" to "high" when the value is greater than 22, "medium" when the value is greater than 12, else convert to "low" using ifelse() function (Hint: you are going to use nested ifelse() function. Search for it.). 
+You can do this in 3 lines of code.
+
+```{r}
+data("mtcars")
+class(mtcars)
+mtcars$mpgfactor = ifelse(mtcars$mpg > 22, "high", ifelse(mtcars$mpg > 12, "medium", "low"))
+```
+
+
+Problem 2.
+Generate a vector containing even numbers from 2 to 50 inclusive (Hint! use seq function). 
+Build a 5x5 matrix and populate it with the vector generated above in row-major order. 
+Check whether R stored it as a matrix. 
+Print the element at the intersection of row 3 and column 4.
+
+```{r}
+n <- seq(2, 50, 2)
+mt <- matrix(n, nrow = 5, ncol = 5, byrow = TRUE)
+is.matrix(mt)
+print(mt[3, 4])
+```
+
+Problem 3.
+Write a function that takes "x" as an argument and returns vector "y" containing all the divisors of "x". 
+Hint! x%%y expression shows the remainder when x is divided by y.
+
+
+```{r}
+number_of_divisers = function(x){
+  y = c()
+  for(i in 1:x){
+    if(x%%i == 0){
+      y = c(y, i)
+    }
+  }
+  return(y)
+}
+
+number_of_divisers(40)
+```
+
+Problem 4.
+Write a function to divide the below-given input list of ages between 0 and 70 into 4 groups.
+
+Baby Boomers - (50 to 70 years old]
+Generation X - (34 to 50 years old]
+Generation Y - (18 to 34 years old]
+Generation Z - 0 to 18 years old
+
+Return a named list with 4 elements where the element name is the group name and element value is the vector of ages in that group.
+Hint: you can use the python code from your first homework and rewrite it in R.
+```{r}
+ls<-c(18,29,3,14,69,10,1,58,52,23,24,5,65)
+f = function(vec){
+  v1 = c()
+  v2 = c()
+  v3 = c()
+  v4 = c()
+  for(i in vec){
+    if(50<i & i<70){
+      v1 = c(v1, i)
+    }else if(34<i & i<50){
+      v2 = c(v2, i)
+    }else if(18<i & i<34){
+      v3 = c(v3, i)
+    }else if(0<i & i<18){
+      v4 = c(v4, i)
+    }
+  }
+  list_ = list(v1, v2, v3, v4)
+  names(list_) = c("Baby Boomers", "Generation X", "Generation Y", "Generation Z")
+  return(list_)
+}
+
+f(ls)
+```
+
+Problem 5.
+Write a while loop starting with x = 0. The loop prints all numbers up to 15 but it skips number 5.
+
+```{r}
+x = 0
+while(x < 16){
+  if(x == 5){
+    x = x + 1
+    next
+  }
+  print(x)
+  x = x + 1
+}
+```
+
+Problem 6.
+Write a repeat loop that exactly 10 times prints a random number between 0 and 1 using runif(1) function.
+
+```{r}
+i = 0
+repeat{
+  print(runif(1))
+  i = i + 1
+  if(i == 10){
+    break
+  }
+}
+```
+
+
+Problem 7.
+Use "foreach" library for this task.
+a. Create a new vector by combining the name with the corresponding surname based on vectors 'a' and 'b'.
+b. Filter vector "c_" to keep only the numbers that are divisible by 10. Hint: use foreach nesting operator and when condition. Make sure that the output is a vector.
+
+```{r}
+# a.
+a<-c("Ani","Anna","Azat","Armen")
+b<-c("Abajyan","Alikhanyan","Asatryan","Amiryan")
+library(foreach)
+foreach(n = a, m = b, .combine = c) %do% (paste(n, m))
+
+# b.
+c_<-c(1:1000)
+(num = foreach(n=c_, .combine=c) %:% when (n%%10==0) %do% (n))
+is.vector(num)       
+```
+
+
+Problem 8.
+Create a multiplication table for the integers 1 to 12 using "foreach"" library.
+Change the index and column names by naming them "One", "Two",..., "Twelve".
+
+```{r}
+table = foreach(n=1:12, .combine=rbind)%:% foreach(m=1:12) %do% (n*m)
+n <- c("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve")
+rownames(table) = n
+colnames(table) = n
+table
+```
+
+Problem 9.
+Write an R program to create a vector which contains 10 random integer values between -10 and +10 using sample() function.
+Using a method of subsetting get all positive numbers and afterward order them.
+
+```{r}
+(int <- sample(-10:10, 10))
+(positive_int <- int[int>0])
+(ordered <- positive_int[order(positive_int)])
+```
+
+Problem 10.
+Load dataset mtcars with data("mtcars") command.
+Print the dataset.
+a. Filter the dataframe by rows with "mpg" greater than or equal to 15 miles per gallon.
+b. Filter "mtcars" for rows with "cyl" less than "7" and "gear" equal to "4".
+c. Delete column "am".
+d. Use subsetting to make 0 all the values less than 3 in column "wt".
+e. Rename all the columns of mtcars dataset from 1 to 10 except column "hp". So "mpg" will become 1,"cyl" will become 2 and so on.
+```{r}
+data("mtcars")
+print(mtcars)
+#a.
+library(dplyr)
+(mtcars %>% filter(mpg >= 15))
+
+#b.
+(mtcars %>% filter(cyl < 7, gear == 4))
+
+#c.
+mtcars$am <- NULL
+mtcars
+
+#d. 
+mtcars$wt[mtcars$wt < 3] = 0
+mtcars
+#e.
+data("mtcars")
+print(mtcars)
+colnames(mtcars) = c(1:3, "hp", 4:10)
+
+```
+
+Problem 11.
+Write a function that replaces NaN values in a given vector with the mean of values that are not NaN call it giving vector a as input.
+
+```{r}
+
+a=c(5,5,0,NaN,5,NaN)
+
+func = function(x){
+  x[is.na(x)] <- mean(x, na.rm = TRUE)
+  return(x)
+}
+func(a)
+```
+
+Problem 12.
+Given two vectors compute their Manhattan distance. Please search for it. The formula is very simple. 
+
+```{r}
+s1 <- c(1,2,3,4)
+s2 <- c(1,2,3,5)
+(manhat_distance = abs(s1-s2))
+sum(manhat_distance)
+```
+
+Problem 13.
+Action Heroes
+
+You are given two dataframes on movie heroes where the value in "pair" column is the same for two heroes that are a pair. Merge this two dataframes on "pair" column. After the merge operation compute the sum of heights of each pair. Use the merged dataframe to calculate the average height of men and women grouped by "gender.x" column(you must take into account both height columns). 
+
+
+```{r}
+library(dplyr)
+library(foreach)
+data1 = data.frame(pair=c(1,2,3,4),
+                   gender = c("M", "M", "M","F"),
+                   name=c("Rnold","Rmen","Ragorn","Rtemida"),
+                  age = c(20, 60, 40, 180),
+                  height = c(280, 200, 9000, 210))
+
+data2 = data.frame(pair=c(1,2,3,4),
+                   gender = c("M", "M", "M","F"),
+                   name=c("Devito","Rmenuhi","Rwen","Res"),
+                   age = c(50, 40, 20, 190),
+                   height = c(210, 300, 9010, 210))
+
+merged_data = merge(data1, data2, by = "pair")
+sum_of_heights_of_pairs = foreach(n = merged_data$height.x, m = merged_data$height.y, .combine = c) %do% sum(n,m)
+
+(sum_of_heights_of_pairs)
+
+merged_data %>% group_by(gender.x) %>%summarise(average_height = mean(c(height.x, height.y)))
+```
+
+Problem 14.
+R and a bottle of rum
+
+Your traitorous companions have thrown you out in the open sea, but luckily the waves have washed you to the shore of the mysterious treasure island. Imagine the treasure island as an NxN matrix (4<=N<=100) and you are at position (0,0) which is the upper left corner. Your duty is to reach the lower right corner of the island to obtain your treasure. However, your job is not easy because the mysterious temple gods have set up deadly traps for you. In the matrix, cells without traps are marked as 0 and cells with traps are marked as -1. Your goal is to check whether you can succesfully reach the treasures circumventing all the traps. You can only move right or down (no diagonal move).
+
+Note: Your starting cell and the ending cell cannot be traps; everything else can be a trap. 
+
+```{r}
+(test <- rbind(c(0,0,-1,0),c(0,-1,0,0),c(-1,0,0,0),c(0,0,0,0)))
+test[1,1]=1
+
+test
+
+for (i in 2:nrow(test)){
+
+  print(test[1,i-1])
+  if(test[1,i-1]==1 && test[1,i]!=-1){
+    test[1,i]=1
+  }
+}
+
+for (i in 2:ncol(test)){
+  
+  print(test[i-1,1])
+  if(test[i-1,1]==1 && test[i,1]!=-1){
+    test[i,1]=1
+  }
+}
+
+for (i in 2:ncol(test)){
+  for (j in 2:nrow(test)){
+    
+      if(test[j,i]==0){
+        if(test[j-1,i]==1 || test[j,i-1]==1){
+          test[i,j]=1
+        }
+      }
+  }
+}
+
+test
+
+
+```
+
+Problem 15.
+R-achnides
+
+Gazillion R-achnides have filled your planet. The decade long scientific research has shown that mother R-achnide controls the soldiers using a specific movement pattern. Your goal is to repeat the movemenet pattern and take the control of R-achnides to save your plannet. 
+
+Given a triangular 5x5 matrix, print the values of the matrix in a moving pattern presented in [this image](https://cglab.ca/~discmath/figures/function-rationalscountable.png).
+
+```{r}
+(test <- rbind(c(1,2,3,4,5),c(1,2,3,4,0),c(1,2,3,0,0),c(1,2,0,0,0),c(1,0,0,0,0)))
+
+i<-1
+j<-1
+test
+k=2
+print(test[i,j])
+while (i < 5){
+  i=k
+  while (i >= 1) {
+    print(test[i,j])
+    i = i - 1
+    j = j + 1
+  }
+  i=1
+  j = k+1
+  
+  while (j >= 1) {
+    print(test[i,j])
+    j = j - 1
+    i = i + 1
+  }
+  j=1
+  k = k + 2
+}
+
+```
+
+
+## Optional Problems
+Problem 16.
+
+Generate even numbers form [0,10] using only 5 characters of code.
+
+```{r}
+0:5*2
+
+```
+
+
+
+
+"# DS120_Assignment4" 
